@@ -11,7 +11,9 @@ class StackSpider(Spider):
     start_urls = [
         "https://seekingalpha.com/market-news",
     ]
+
     # //*[@id="latest-news-list"]/li/a[@class="item"]/text()
+    all_urls = []
 
     def parse(self, response):
         questions = Selector(response).xpath('//li[@class="item"]')
@@ -21,7 +23,11 @@ class StackSpider(Spider):
                 'h4/a/text()').extract()[0]
             item['url'] = "https://seekingalpha.com" + question.xpath(
                 'h4/a/@href').extract()[0]
-            print("printing", item)
-            yield item
+            self.all_urls.append(item['url'])
+        print(self.all_urls)
+        for url in self.all_urls:
+            # get content for url to be parsed. USE CALLBACK
+        yield scrapy.Request(url, callback=self.parse_url)
 
-        # h4/a/text()
+    def parse_url(self, response)
+    # h4/a/text()
